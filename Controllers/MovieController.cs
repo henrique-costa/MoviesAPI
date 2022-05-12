@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
+using MoviesAPI.Data.DTO;
 using MoviesAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -13,15 +15,18 @@ namespace MoviesAPI.Controllers
     public class MovieController : ControllerBase
     {
         private MovieContext _context;
+        private IMapper _mapper;
 
-        public MovieController(MovieContext context)
+        public MovieController(MovieContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Movie movie)
+        public IActionResult Create([FromBody] CreateMovieDTO movieDTO)
         {
+            Movie movie = _mapper.Map<Movie>(movieDTO);
             _context.Movies.Add(movie);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetById), new { Id = movie.MovieId}, movie);
@@ -39,23 +44,22 @@ namespace MoviesAPI.Controllers
             Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
             if (movie != null)
             {
-                return Ok(movie);
+                ReadMovieDTO movieDTO = _mapper.Map<ReadMovieDTO>(movie);
+
+                return Ok(movieDTO);
             }
             return NotFound();
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] Movie movieToUpdate)
+        public IActionResult Update(int id, [FromBody] UpdateMovieDTO movieToUpdateDTO)
         {
             Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
             if (movie == null)
             {
                 return NotFound();
             }
-            movie.Title = movieToUpdate.Title;
-            movie.Director = movieToUpdate.Director;
-            movie.Duration = movieToUpdate.Duration;
-            movie.Genre = movieToUpdate.Genre;
+            _mapper.Map(movieToUpdateDTO, movie);
             _context.SaveChanges();
             return NoContent();
         }
