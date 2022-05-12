@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace MoviesAPI.Data.DTO
+namespace MoviesAPI.Data.DTO.Movie
 {
-    public class UpdateMovieDTO
+    public class ReadMovieDTO
     {
+        [Key]
+        [Required]
+        public int MovieId { get; set; }
         [Required(ErrorMessage = "The title is required")]
         public string Title { get; set; }
         [Required(ErrorMessage = "The title is required")]
@@ -12,5 +16,6 @@ namespace MoviesAPI.Data.DTO
         public string Genre { get; set; }
         [Range(1, 400, ErrorMessage = "The duration must be between 1 - 400 minutes")]
         public int Duration { get; set; }
+        public DateTime TimeOfInquiry { get; set; } = DateTime.Now;
     }
 }

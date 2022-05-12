@@ -1,35 +1,31 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
-using MoviesAPI.Data.DTO.Movie;
+using MoviesAPI.Data.DTO.Address;
 using MoviesAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MoviesAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MovieController : ControllerBase
+    public class AddressController : ControllerBase
     {
         private MovieContext _context;
         private IMapper _mapper;
 
-        public MovieController(MovieContext context, IMapper mapper)
+        public AddressController(MovieContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateMovieDTO movieDTO)
+        public IActionResult Create([FromBody] CreateAddressDTO addressDTO)
         {
-            Movie movie = _mapper.Map<Movie>(movieDTO);
-            _context.Movies.Add(movie);
+            Address address = _mapper.Map<Address>(addressDTO);
+            _context.Addresses.Add(address);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetById), new { Id = movie.MovieId}, movie);
+            return CreatedAtAction(nameof(GetById), new { Id = address.AddressId }, address);
         }
 
         [HttpGet]
