@@ -4,8 +4,6 @@ namespace MoviesAPI.Data.DTO.AddressDto
 {
     public class ReadAddressDTO
     {
-        [Key]
-        [Required]
         public int AddressId { get; set; }
         public string Street { get; set; }
         public string City { get; set; }

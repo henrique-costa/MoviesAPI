@@ -8,13 +8,13 @@ namespace MoviesAPI.Models
         [Required]
         public int MovieId { get; set; }
 
-        [Required(ErrorMessage = "The title is required")]
+        [Required]
         public string Title { get; set; }
-        [Required(ErrorMessage = "The title is required")]
+        [Required]
         public string Director { get; set; }
-        [StringLength(30, ErrorMessage = "The genre cant be longer than 30 characters")]
+        [StringLength(30)]
         public string Genre { get; set; }
-        [Range(1, 400, ErrorMessage = "The duration must be between 1 - 400 minutes")]
+        [Range(1, 400)]
         public int Duration { get; set; }
 
     }

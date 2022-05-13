@@ -6,11 +6,12 @@ namespace MoviesAPI.Models
     {
         [Key]
         [Required]
-        public int CinemaId { get; set; }
-        
-        [Required(ErrorMessage = "The field Name is mandatory")]
+        public int CinemaId { get; set; }        
+        [Required]
         public string Name { get; set; }
         public int AddressId { get; set; }
         public virtual Address Address { get; set; }
+        public int ManagerId { get; set; }
+        public virtual Manager Manager { get; set; }
     }
 }

@@ -7,5 +7,6 @@ namespace MoviesAPI.Data.DTO.CinemaDto
         [Required(ErrorMessage = "The field Name is mandatory")]
         public string Name { get; set; }
         public int AddressId { get; set; }
+        public int ManagerId { get; set; }
     }
 }

@@ -11,14 +11,23 @@ namespace MoviesAPI.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //one to one
             builder.Entity<Address>()
                 .HasOne(address => address.Cinema)
                 .WithOne(cinema => cinema.Address)
                 .HasForeignKey<Cinema>(cinema => cinema.AddressId);
+
+            //one to many
+            builder.Entity<Cinema>()
+                .HasOne(cinema => cinema.Manager)
+                .WithMany(manager => manager.Cinemas)
+                .HasForeignKey(cinema => cinema.ManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
+        public DbSet<Manager> Managers { get; set; }
     }
 }
