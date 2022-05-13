@@ -9,6 +9,13 @@ namespace MoviesAPI.Data
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Address>()
+                .HasOne(address => address.Cinema)
+                .WithOne(cinema => cinema.Address)
+                .HasForeignKey<Cinema>(cinema => cinema.AddressId);
+        }
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Address> Addresses { get; set; }

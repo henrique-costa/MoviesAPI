@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
-using MoviesAPI.Data.DTO.Address;
+using MoviesAPI.Data.DTO.AddressDto;
 using MoviesAPI.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoviesAPI.Controllers
 {
@@ -29,33 +31,33 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Movie> GetAll()
+        public IEnumerable<Address> GetAll()
         {
-            return _context.Movies;
+            return _context.Addresses;
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie != null)
+            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
+            if (address != null)
             {
-                ReadMovieDTO movieDTO = _mapper.Map<ReadMovieDTO>(movie);
+                ReadAddressDTO addressDTO = _mapper.Map<ReadAddressDTO>(address);
 
-                return Ok(movieDTO);
+                return Ok(addressDTO);
             }
             return NotFound();
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] UpdateMovieDTO movieToUpdateDTO)
+        public IActionResult Update(int id, [FromBody] UpdateAddressDTO addressToUpdateDTO)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie == null)
+            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
+            if (address == null)
             {
                 return NotFound();
             }
-            _mapper.Map(movieToUpdateDTO, movie);
+            _mapper.Map(addressToUpdateDTO, address);
             _context.SaveChanges();
             return NoContent();
         }
@@ -63,12 +65,12 @@ namespace MoviesAPI.Controllers
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie == null)
+            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
+            if (address == null)
             {
                 return NotFound();
             }
-            _context.Remove(movie);
+            _context.Remove(address);
             _context.SaveChanges();
             return NoContent();
         }

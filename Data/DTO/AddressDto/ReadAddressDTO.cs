@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace MoviesAPI.Models
+namespace MoviesAPI.Data.DTO.AddressDto
 {
-    public class Address
+    public class ReadAddressDTO
     {
         [Key]
         [Required]
@@ -11,7 +10,5 @@ namespace MoviesAPI.Models
         public string Street { get; set; }
         public string City { get; set; }
         public int Number { get; set; }
-        [JsonIgnore]
-        public virtual Cinema Cinema { get; set; }
     }
 }

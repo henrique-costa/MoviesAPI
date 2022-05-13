@@ -1,16 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MoviesAPI.Models
+namespace MoviesAPI.Data.DTO.CinemaDto
 {
-    public class Cinema
+    public class CreateCinemaDTO
     {
-        [Key]
-        [Required]
-        public int CinemaId { get; set; }
-        
         [Required(ErrorMessage = "The field Name is mandatory")]
         public string Name { get; set; }
         public int AddressId { get; set; }
-        public virtual Address Address { get; set; }
     }
 }
