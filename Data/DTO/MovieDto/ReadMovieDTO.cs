@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace MoviesAPI.Data.DTO.Movie
+namespace MoviesAPI.Data.DTO.MovieDTO
 {
     public class ReadMovieDTO
-    {        
+    {
         public int MovieId { get; set; }
         public string Title { get; set; }
         public string Director { get; set; }

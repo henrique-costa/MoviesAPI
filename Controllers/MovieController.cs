@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
-using MoviesAPI.Data.DTO.Movie;
+using MoviesAPI.Data.DTO.MovieDTO;
 using MoviesAPI.Models;
 using System;
 using System.Collections.Generic;
