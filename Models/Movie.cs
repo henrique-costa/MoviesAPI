@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MoviesAPI.Models
 {
@@ -16,6 +17,6 @@ namespace MoviesAPI.Models
         public string Genre { get; set; }
         [Range(1, 400)]
         public int Duration { get; set; }
-
+        public virtual List<MovieSession> Sessions { get; set; }
     }
 }
