@@ -33,9 +33,25 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Cinema> GetAll()
+        public IActionResult GetAll([FromQuery] string movieName)
         {
-            return _context.Cinemas;
+            //return _context.Cinemas;
+            List<Cinema> cinemas = _context.Cinemas.ToList();
+            if (cinemas == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(movieName))
+            {
+                IEnumerable<Cinema> query = from cinema in cinemas where
+                            cinema.Sessions.Any(session => 
+                            session.Movie.Title == movieName)
+                            select cinema;
+                cinemas = query.ToList();
+            }
+            List<ReadCinemaDTO> readDto = _mapper.Map<List<ReadCinemaDTO>>(cinemas);
+
+            return Ok(readDto);
         }
 
         [HttpGet("{id:int}")]
