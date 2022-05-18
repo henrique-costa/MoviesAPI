@@ -12,5 +12,6 @@ namespace MoviesAPI.Data.DTO.MovieDTO
         public string Genre { get; set; }
         [Range(1, 400, ErrorMessage = "The duration must be between 1 - 400 minutes")]
         public int Duration { get; set; }
+        public int AgeRate { get; set; }
     }
 }
