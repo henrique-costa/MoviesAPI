@@ -33,10 +33,21 @@ namespace MoviesAPI.Controllers
         [HttpGet]
         public IActionResult GetAll([FromQuery] int? ageRate = null)
         {
-            List<ReadMovieDTO> readMovieDTO = _movieService.GetAll(ageRate);
-            if (readMovieDTO != null)
+            List<Movie> movies;
+            if (ageRate == null)
             {
-                return Ok(readMovieDTO);
+                movies = _context.Movies.ToList();
+            }
+            else
+            {
+                movies = _context.Movies.Where(movie => movie.AgeRate <= ageRate).ToList();
+            }
+
+            
+            if (movies != null)
+            {
+                List<ReadMovieDTO> readDto = _mapper.Map<List<ReadMovieDTO>>(movies);
+                return Ok(readDto);
             }
             return NotFound();
         }
