@@ -35,8 +35,11 @@ namespace MoviesAPI.Services
             {
                 movies = _context.Movies.ToList();
             }
+            else
+            {
+                movies = _context.Movies.Where(movie => movie.AgeRate <= ageRate).ToList();
+            }
 
-            movies = _context.Movies.Where(movie => movie.AgeRate <= ageRate).ToList();
             if (movies != null)
             {
                 List<ReadMovieDTO> readDto = _mapper.Map<List<ReadMovieDTO>>(movies);
