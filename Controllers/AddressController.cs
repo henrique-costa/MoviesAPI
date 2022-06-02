@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTO.AddressDto;
 using MoviesAPI.Models;
+using MoviesAPI.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,66 +14,56 @@ namespace MoviesAPI.Controllers
     [Route("[controller]")]
     public class AddressController : ControllerBase
     {
-        private MovieContext _context;
-        private IMapper _mapper;
+        private AddressService _addressService;
 
-        public AddressController(MovieContext context, IMapper mapper)
+        public AddressController(AddressService addressService)
         {
-            _context = context;
-            _mapper = mapper;
+            _addressService = addressService;
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreateAddressDTO addressDTO)
         {
-            Address address = _mapper.Map<Address>(addressDTO);
-            _context.Addresses.Add(address);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetById), new { Id = address.AddressId }, address);
+            ReadAddressDTO readDto = _addressService.Create(addressDTO);
+            return CreatedAtAction(nameof(GetById), new { Id = readDto.AddressId }, readDto);
         }
 
         [HttpGet]
-        public IEnumerable<Address> GetAll()
+        public IActionResult GetAll()
         {
-            return _context.Addresses;
+            List<ReadAddressDTO> readDto = _addressService.GetAll();
+            if (readDto == null) return NotFound();
+            return Ok(readDto);
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
-            if (address != null)
-            {
-                ReadAddressDTO addressDTO = _mapper.Map<ReadAddressDTO>(address);
-
-                return Ok(addressDTO);
-            }
-            return NotFound();
+            ReadAddressDTO readAddressDTO = _addressService.GetById(id);
+            if (readAddressDTO == null) return NotFound();
+            return Ok(readAddressDTO);
         }
 
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, [FromBody] UpdateAddressDTO addressToUpdateDTO)
         {
-            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
-            if (address == null)
+            Result result = _addressService.Update(id, addressToUpdateDTO);
+            if (result.IsFailed)
             {
                 return NotFound();
             }
-            _mapper.Map(addressToUpdateDTO, address);
-            _context.SaveChanges();
             return NoContent();
+
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            Address address = _context.Addresses.FirstOrDefault(address => address.AddressId == id);
-            if (address == null)
+            Result result = _addressService.Delete(id);
+            if (result.IsFailed)
             {
                 return NotFound();
             }
-            _context.Remove(address);
-            _context.SaveChanges();
             return NoContent();
         }
 

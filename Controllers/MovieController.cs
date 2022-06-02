@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using FluentResults;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTO.MovieDTO;
 using MoviesAPI.Models;
+using MoviesAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,37 +16,27 @@ namespace MoviesAPI.Controllers
     [Route("[controller]")]
     public class MovieController : ControllerBase
     {
-        private MovieContext _context;
-        private IMapper _mapper;
+        private MovieService _movieService;
 
-        public MovieController(MovieContext context, IMapper mapper)
+        public MovieController(MovieService movieService)
         {
-            _context = context;
-            _mapper = mapper;
+            _movieService = movieService;
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreateMovieDTO movieDTO)
         {
-            Movie movie = _mapper.Map<Movie>(movieDTO);
-            _context.Movies.Add(movie);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetById), new { Id = movie.MovieId}, movie);
+            ReadMovieDTO readMovieDTO = _movieService.Create(movieDTO);            
+            return CreatedAtAction(nameof(GetById), new { Id = readMovieDTO.MovieId}, readMovieDTO);
         }
 
         [HttpGet]
         public IActionResult GetAll([FromQuery] int? ageRate = null)
         {
-            if (ageRate == null)
+            List<ReadMovieDTO> readMovieDTO = _movieService.GetAll(ageRate);
+            if (readMovieDTO != null)
             {
-                //List <Movie> movies = _context.Movies;
-            }
-
-            List<Movie> movies = _context.Movies.Where(movie => movie.AgeRate <= ageRate).ToList();
-            if (movies != null)
-            {
-                List<ReadMovieDTO> readDto = _mapper.Map<List<ReadMovieDTO>>(movies);
-                return Ok(readDto);
+                return Ok(readMovieDTO);
             }
             return NotFound();
         }
@@ -52,12 +44,10 @@ namespace MoviesAPI.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie != null)
+            ReadMovieDTO readMovieDTO = _movieService.GetById(id);
+            if (readMovieDTO != null)
             {
-                ReadMovieDTO movieDTO = _mapper.Map<ReadMovieDTO>(movie);
-
-                return Ok(movieDTO);
+                return Ok(readMovieDTO);
             }
             return NotFound();
         }
@@ -65,26 +55,22 @@ namespace MoviesAPI.Controllers
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, [FromBody] UpdateMovieDTO movieToUpdateDTO)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie == null)
+            Result result = _movieService.Update(id, movieToUpdateDTO);
+            if (result.IsFailed)
             {
                 return NotFound();
             }
-            _mapper.Map(movieToUpdateDTO, movie);
-            _context.SaveChanges();
             return NoContent();
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            Movie movie = _context.Movies.FirstOrDefault(movie => movie.MovieId == id);
-            if (movie == null)
+            Result result = _movieService.Delete(id);
+            if (result.IsFailed)
             {
                 return NotFound();
             }
-            _context.Remove(movie);
-            _context.SaveChanges();
             return NoContent();
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTO.MovieSession;
 using MoviesAPI.Models;
+using MoviesAPI.Services;
 using System.Linq;
 
 namespace MoviesAPI.Controllers
@@ -11,35 +12,29 @@ namespace MoviesAPI.Controllers
     [Route("[controller]")]
     public class MovieSessionController : ControllerBase
     {
-        private IMapper _mapper;
-        private MovieContext _context;
+        private MovieSessionService _movieSessionService;
 
-        public MovieSessionController(IMapper mapper, MovieContext context)
+        public MovieSessionController(MovieSessionService movieSessionService)
         {
-            _mapper = mapper;
-            _context = context;
+            _movieSessionService = movieSessionService;
         }
 
         [HttpPost]
-        public IActionResult Create(CreateMovieSessionDTO movieSessionDTO)
+        public IActionResult Create([FromBody] CreateMovieSessionDTO movieSessionDTO)
         {
-            MovieSession movieSession = _mapper.Map<MovieSession>(movieSessionDTO);
-            _context.Sessions.Add(movieSession);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetById), new { Id = movieSession.MovieSessionId}, movieSession);
+            ReadMovieSessionDTO readMovieSessionDTO = _movieSessionService.Create(movieSessionDTO);
+            return CreatedAtAction(nameof(GetById), new { Id = readMovieSessionDTO.MovieSessionId}, readMovieSessionDTO);
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            MovieSession movieSession = _context.Sessions.FirstOrDefault(movieSession => movieSession.MovieSessionId == id);
-            if (movieSession != null)
+            ReadMovieSessionDTO readDto = _movieSessionService.GetById(id);
+            if (readDto == null)
             {
-                ReadMovieSessionDTO movieDTO = _mapper.Map<ReadMovieSessionDTO>(movieSession);
-
-                return Ok(movieDTO);
+                return NotFound();
             }
-            return NotFound();
+            return Ok(readDto);
         }
     }
 }
