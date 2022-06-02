@@ -24,7 +24,7 @@ namespace MoviesAPI.Services
             Address address = _mapper.Map<Address>(addressDto);
             _context.Addresses.Add(address);
             _context.SaveChanges();
-            return _mapper.Map<ReadAddressDTO>(addressDto);
+            return _mapper.Map<ReadAddressDTO>(address);
         }
 
         public List<ReadAddressDTO> GetAll()

@@ -25,7 +25,7 @@ namespace MoviesAPI.Services
             Cinema cinema = _mapper.Map<Cinema>(cinemaDTO);
             _context.Cinemas.Add(cinema);
             _context.SaveChanges();
-            return _mapper.Map<ReadCinemaDTO>(cinemaDTO);
+            return _mapper.Map<ReadCinemaDTO>(cinema);
         }
 
         internal List<ReadCinemaDTO> GetAll(string movieName)
