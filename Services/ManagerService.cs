@@ -24,7 +24,7 @@ namespace MoviesAPI.Services
             Manager manager = _mapper.Map<Manager>(managerDTO);
             _context.Managers.Add(manager);
             _context.SaveChanges();
-            return _mapper.Map<ReadManagerDTO>(managerDTO);
+            return _mapper.Map<ReadManagerDTO>(manager);
 
         }
 
