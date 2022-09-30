@@ -33,6 +33,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin, regular", Policy ="MinimumAge")]
         public IActionResult GetAll([FromQuery] int? ageRate = null)
         {
             List<ReadMovieDTO> dto = _movieService.GetAll(ageRate);
